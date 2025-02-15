@@ -2,6 +2,7 @@ package prography.example.demo.domain.User.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import prography.example.demo.domain.UserRoom.entity.UserRoom;
 import prography.example.demo.global.common.BaseEntity;
 import prography.example.demo.global.common.enums.UserStatus;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "users")
