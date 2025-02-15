@@ -2,6 +2,7 @@ package prography.example.demo.domain.Room.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import prography.example.demo.domain.User.entity.User;
 import prography.example.demo.domain.UserRoom.entity.UserRoom;
 import prography.example.demo.global.common.BaseEntity;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Room extends BaseEntity {
