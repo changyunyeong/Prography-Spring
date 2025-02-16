@@ -3,6 +3,8 @@ package prography.example.demo.domain.User.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -62,4 +64,13 @@ public class UserServiceImpl implements UserService {
         userRepository.saveAll(users);
     }
 
+    @Override
+    public Page<User> getUserList(int page, int size) {
+
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").ascending());
+
+        Page<User> userList = userRepository.findAll(pageRequest);
+
+        return userList;
+    }
 }
