@@ -1,5 +1,6 @@
 package prography.example.demo.domain.User.converter;
 
+import org.springframework.data.domain.Page;
 import prography.example.demo.domain.User.dto.response.UserResponseDTO;
 import prography.example.demo.domain.User.entity.User;
 import prography.example.demo.global.common.enums.UserStatus;
@@ -27,6 +28,31 @@ public class UserConverter {
         return userList.stream()
                 .map(UserConverter::toUser)
                 .collect(Collectors.toList());
+    }
+
+    public static UserResponseDTO.UserPreViewDTO userPreViewDTO(User user) {
+
+        return UserResponseDTO.UserPreViewDTO.builder()
+                .id(user.getId())
+                .fakerId(user.getFakerId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .userStatus(user.getStatus())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
+                .build();
+    }
+
+    public static UserResponseDTO.UserPreViewListDTO userPreViewListDTO(Page<User> userList) {
+        List<UserResponseDTO.UserPreViewDTO> userPreViewDTOList = userList.stream()
+                .map(UserConverter::userPreViewDTO)
+                .collect(Collectors.toList());
+
+        return UserResponseDTO.UserPreViewListDTO.builder()
+                .userList(userPreViewDTOList)
+                .totalElements(userList.getTotalElements())
+                .totalPage(userList.getTotalPages())
+                .build();
     }
 
     private static UserStatus determineUserStatus(Integer fakerId) {

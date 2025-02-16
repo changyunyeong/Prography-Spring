@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import prography.example.demo.global.common.enums.UserStatus;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class UserResponseDTO {
@@ -30,5 +33,29 @@ public class UserResponseDTO {
             private String username;
             private String email;
         }
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserPreViewDTO {
+        private int id;
+        private int fakerId;
+        private String name;
+        private String email;
+        private UserStatus userStatus;
+        LocalDateTime createdAt;
+        LocalDateTime updatedAt;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserPreViewListDTO {
+        List<UserPreViewDTO> userList;
+        long totalElements;
+        int totalPage;
     }
 }
