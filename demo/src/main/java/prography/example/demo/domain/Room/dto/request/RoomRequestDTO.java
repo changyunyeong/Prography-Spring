@@ -7,7 +7,7 @@ public class RoomRequestDTO {
 
     @Getter
     public static class CreateRoomRequestDTO {
-        int userId;
+        Integer userId;
         RoomType roomType;
         String title;
     }

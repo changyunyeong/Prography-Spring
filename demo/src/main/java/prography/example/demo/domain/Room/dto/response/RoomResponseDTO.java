@@ -13,8 +13,8 @@ public class RoomResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class CreateRoomResponseDTO {
-        private int id;
-        private int hostId;
+        private Integer id;
+        private Integer hostId;
         private RoomStatus status;
     }
 }

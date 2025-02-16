@@ -40,8 +40,8 @@ public class UserResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UserPreViewDTO {
-        private int id;
-        private int fakerId;
+        private Integer id;
+        private Integer fakerId;
         private String name;
         private String email;
         private UserStatus userStatus;
@@ -56,6 +56,6 @@ public class UserResponseDTO {
     public static class UserPreViewListDTO {
         List<UserPreViewDTO> userList;
         long totalElements;
-        int totalPage;
+        Integer totalPage;
     }
 }
