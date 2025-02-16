@@ -1,4 +1,4 @@
-package prography.example.demo.global.filter;
+package prography.example.demo.global.runner;
 
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
