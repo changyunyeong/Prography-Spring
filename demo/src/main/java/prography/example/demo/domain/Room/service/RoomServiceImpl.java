@@ -2,6 +2,9 @@ package prography.example.demo.domain.Room.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import prography.example.demo.domain.Room.converter.RoomConverter;
@@ -46,5 +49,14 @@ public class RoomServiceImpl implements RoomService {
 
         Room room = RoomConverter.toRoom(request, user);
         return roomRepository.save(room);
+    }
+    
+    @Override
+    public Page<Room> getRoomList(int size, int page) {
+
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").ascending());
+        Page<Room> roomList = roomRepository.findAll(pageRequest);
+
+        return roomList;
     }
 }

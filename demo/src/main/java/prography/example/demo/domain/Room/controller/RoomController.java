@@ -4,11 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
 import prography.example.demo.domain.Room.converter.RoomConverter;
 import prography.example.demo.domain.Room.dto.request.RoomRequestDTO;
+import prography.example.demo.domain.Room.dto.response.RoomResponseDTO;
 import prography.example.demo.domain.Room.entity.Room;
 import prography.example.demo.domain.Room.service.RoomService;
 import prography.example.demo.global.apiPayLoad.ApiResponse;
@@ -31,4 +31,11 @@ public class RoomController {
         return ApiResponse.success(null);
     }
 
+    @GetMapping("/room")
+    @Operation(summary = "방 전체 조회 API", description = "모든 방에 대한 데이터를 반환")
+    public ApiResponse<RoomResponseDTO.RoomPreViewListDTO> getRoomList (
+            @RequestParam("size") int size, @RequestParam("page") int page) {
+        Page<Room> roomList = roomService.getRoomList(size, page);
+        return ApiResponse.success(RoomConverter.roomPreViewListDTO(roomList));
+    }
 }
