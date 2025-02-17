@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import prography.example.demo.domain.Room.converter.RoomConverter;
 import prography.example.demo.domain.Room.dto.request.RoomRequestDTO;
+import prography.example.demo.domain.Room.dto.response.RoomResponseDTO;
 import prography.example.demo.domain.Room.entity.Room;
 import prography.example.demo.domain.Room.repository.RoomRepository;
 import prography.example.demo.domain.User.entity.User;
@@ -58,5 +59,14 @@ public class RoomServiceImpl implements RoomService {
         Page<Room> roomList = roomRepository.findAll(pageRequest);
 
         return roomList;
+    }
+
+    @Override
+    public RoomResponseDTO.RoomDetailDTO getRoomDetail(Integer roomId) {
+
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_REQUEST)); // 존재하지 않는 id에 대한 요청시 201 반환
+
+        return RoomConverter.roomDetailViewDTO(room);
     }
 }

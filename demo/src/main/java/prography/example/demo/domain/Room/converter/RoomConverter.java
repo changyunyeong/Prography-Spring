@@ -57,4 +57,17 @@ public class RoomConverter {
                 .totalPages(roomList.getTotalPages())
                 .build();
     }
+
+    public static RoomResponseDTO.RoomDetailDTO roomDetailViewDTO(Room room) {
+
+        return RoomResponseDTO.RoomDetailDTO.builder()
+                .id(room.getId())
+                .title(room.getTitle())
+                .hostId(room.getHost().getId())
+                .roomType(room.getRoomType())
+                .status(room.getStatus())
+                .createdAt(room.getCreatedAt())
+                .updatedAt(room.getUpdatedAt())
+                .build();
+    }
 }

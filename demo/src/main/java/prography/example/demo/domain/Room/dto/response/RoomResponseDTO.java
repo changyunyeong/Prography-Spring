@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import prography.example.demo.global.common.enums.RoomStatus;
 import prography.example.demo.global.common.enums.RoomType;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class RoomResponseDTO {
@@ -42,4 +43,19 @@ public class RoomResponseDTO {
         private Integer totalElements;
         private Integer totalPages;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RoomDetailDTO {
+        private Integer id;
+        private String title;
+        private Integer hostId;
+        private RoomType roomType;
+        private RoomStatus status;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+    }
+
 }

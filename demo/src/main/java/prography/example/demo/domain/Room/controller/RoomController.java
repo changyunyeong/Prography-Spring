@@ -38,4 +38,12 @@ public class RoomController {
         Page<Room> roomList = roomService.getRoomList(size, page);
         return ApiResponse.success(RoomConverter.roomPreViewListDTO(roomList));
     }
+
+    @GetMapping("/room/{roomId}")
+    @Operation(summary = "방 상세 조회 API", description = "roomId를 받아 방에 대한 상세 조회")
+    public ApiResponse<RoomResponseDTO.RoomDetailDTO> getRoomDetail (
+            @PathVariable("roomId") Integer roomId) {
+        RoomResponseDTO.RoomDetailDTO roomDetail = roomService.getRoomDetail(roomId);
+        return ApiResponse.success(roomDetail);
+    }
 }
