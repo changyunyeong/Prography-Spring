@@ -51,7 +51,12 @@ public class RoomServiceImpl implements RoomService {
         }
 
         Room room = RoomConverter.toRoom(request, user);
-        return roomRepository.save(room);
+        roomRepository.save(room); // 방 생성
+
+        UserRoom hostUserRoom = RoomConverter.toAttentionRoom(user, room, Team.RED);
+        userRoomRepository.save(hostUserRoom); // 방 생성 후 호스트가 자동으로 방에 참가
+
+        return room;
     }
     
     @Override
@@ -84,7 +89,6 @@ public class RoomServiceImpl implements RoomService {
 
         Integer countByRoom = userRoomRepository.countUserRoomsByRoomId(roomId); // 방에 참여한 인원 수
         Integer readTeamCount = userRoomRepository.countByRoomIdAndTeam(roomId, Team.RED); // 레드팀 인원 수
-        Integer blueTeamCount = userRoomRepository.countByRoomIdAndTeam(roomId, Team.BLUE); // 블루팀 인원 수
 
         RoomType roomType = room.getRoomType();
         int maxCapacity = roomType == RoomType.DOUBLE ? 4 : 2; // 방 최대 정원 설정
@@ -115,8 +119,6 @@ public class RoomServiceImpl implements RoomService {
 
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_REQUEST)); // 존재하지 않는 id에 대한 요청시 201 반환
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_REQUEST)); // user가 존재하지 않을 경우에도 201 반환
         boolean isUserInRoom = userRoomRepository.existsByUserIdAndRoomId(userId, roomId);
 
         if (!isUserInRoom) {
