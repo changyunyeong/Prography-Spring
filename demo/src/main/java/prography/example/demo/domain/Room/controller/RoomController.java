@@ -50,7 +50,7 @@ public class RoomController {
     @PostMapping("/room/attention/{roomId}")
     @Operation(summary = "방 참가 API")
     public ApiResponse<Void> attentionRoom(
-            @PathVariable("roomId") Integer roomId, @RequestBody @Valid RoomRequestDTO.AttentionRoomRequestDTO request) {
+            @PathVariable("roomId") Integer roomId, @RequestBody @Valid RoomRequestDTO.RoomActionDTO request) {
         roomService.attentionRoom(roomId, request.getUserId());
         return ApiResponse.success(null);
     }

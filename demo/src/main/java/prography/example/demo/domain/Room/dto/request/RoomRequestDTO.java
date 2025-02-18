@@ -13,7 +13,7 @@ public class RoomRequestDTO {
     }
 
     @Getter
-    public static class AttentionRoomRequestDTO {
+    public static class RoomActionDTO {
         Integer userId;
     }
 }
