@@ -1,14 +1,9 @@
 package prography.example.demo.domain.User.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import jakarta.servlet.http.PushBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import prography.example.demo.domain.User.converter.UserConverter;
 import prography.example.demo.domain.User.dto.request.UserRequestDTO;
 import prography.example.demo.domain.User.dto.response.UserResponseDTO;

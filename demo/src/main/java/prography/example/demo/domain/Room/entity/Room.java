@@ -36,6 +36,10 @@ public class Room extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private RoomStatus status;
 
-    @OneToMany(mappedBy = "roomId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
     private List<UserRoom> userRoomList = new ArrayList<>();
+
+    public void setStatus(RoomStatus status) {
+        this.status = status;
+    }
 }

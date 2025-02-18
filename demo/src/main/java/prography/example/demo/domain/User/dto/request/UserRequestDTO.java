@@ -7,7 +7,7 @@ public class UserRequestDTO {
     @Getter
     public static class InitUserRequestDTO {
 
-        private int seed;
-        private int quantity;
+        private Integer seed;
+        private Integer quantity;
     }
 }
