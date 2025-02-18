@@ -5,7 +5,9 @@ import prography.example.demo.domain.Room.dto.request.RoomRequestDTO;
 import prography.example.demo.domain.Room.dto.response.RoomResponseDTO;
 import prography.example.demo.domain.Room.entity.Room;
 import prography.example.demo.domain.User.entity.User;
+import prography.example.demo.domain.UserRoom.entity.UserRoom;
 import prography.example.demo.global.common.enums.RoomStatus;
+import prography.example.demo.global.common.enums.Team;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -68,6 +70,15 @@ public class RoomConverter {
                 .status(room.getStatus())
                 .createdAt(room.getCreatedAt())
                 .updatedAt(room.getUpdatedAt())
+                .build();
+    }
+
+    public static UserRoom toAttentionRoom(User user, Room room, Team team) {
+
+        return UserRoom.builder()
+                .room(room)
+                .user(user)
+                .team(team)
                 .build();
     }
 }

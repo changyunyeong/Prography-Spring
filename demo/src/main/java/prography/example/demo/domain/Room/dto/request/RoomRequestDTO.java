@@ -11,4 +11,9 @@ public class RoomRequestDTO {
         RoomType roomType;
         String title;
     }
+
+    @Getter
+    public static class AttentionRoomRequestDTO {
+        Integer userId;
+    }
 }
