@@ -23,7 +23,7 @@ public class RoomController {
     @PostMapping("/room")
     @Operation(summary = "방 생성 API",
             description = "방을 생성하려고 하는 user(userId)의 상태가 활성(ACTIVE)상태일 때만, 방을 생성할 수 있음\n"
-                + " 방을 생성하려고 하는 user(userId)가 현재 참여한 방이 있다면, 방을 생성할 수 없음")
+                    + " 방을 생성하려고 하는 user(userId)가 현재 참여한 방이 있다면, 방을 생성할 수 없음")
     public ApiResponse<Void> createRoom(
             @RequestBody @Valid RoomRequestDTO.CreateRoomRequestDTO request) {
         Room room = roomService.createRoom(request);
@@ -52,6 +52,14 @@ public class RoomController {
     public ApiResponse<Void> attentionRoom(
             @PathVariable("roomId") Integer roomId, @RequestBody @Valid RoomRequestDTO.RoomActionDTO request) {
         roomService.attentionRoom(roomId, request.getUserId());
+        return ApiResponse.success(null);
+    }
+
+    @PostMapping("/room/out/{roomId}")
+    @Operation(summary = "방 나가기 API", description = "호스트가 방을 나가게 되면 방에 있던 모든 사람도 해당 방에서 나가게 됨")
+    public ApiResponse<Void> outRoom(
+            @PathVariable("roomId") Integer roomId, @RequestBody @Valid RoomRequestDTO.RoomActionDTO request) {
+        roomService.outRoom(roomId, request.getUserId());
         return ApiResponse.success(null);
     }
 }

@@ -11,4 +11,5 @@ public interface RoomService {
     Page<Room> getRoomList(int size, int page);
     RoomResponseDTO.RoomDetailDTO getRoomDetail(Integer roomId);
     void attentionRoom(Integer roomId, Integer userId);
+    void outRoom(Integer roomId, Integer userId);
 }

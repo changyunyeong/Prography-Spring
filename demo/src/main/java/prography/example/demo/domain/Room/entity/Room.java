@@ -38,4 +38,8 @@ public class Room extends BaseEntity {
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
     private List<UserRoom> userRoomList = new ArrayList<>();
+
+    public void setStatus(RoomStatus status) {
+        this.status = status;
+    }
 }

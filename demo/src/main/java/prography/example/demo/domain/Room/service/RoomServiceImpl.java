@@ -40,7 +40,6 @@ public class RoomServiceImpl implements RoomService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_REQUEST)); // user가 존재하지 않을 경우에도 201 반환
 
-
         if (user.getStatus() != UserStatus.ACTIVE) {
             throw new GeneralException(ErrorStatus.INVALID_REQUEST); // 활성상태가 아닐때는 201 응답을 반환
         }
@@ -109,5 +108,31 @@ public class RoomServiceImpl implements RoomService {
 
         UserRoom userRoom = RoomConverter.toAttentionRoom(user, room, team);
         userRoomRepository.save(userRoom);
+    }
+
+    @Override
+    public void outRoom(Integer roomId, Integer userId) {
+
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_REQUEST)); // 존재하지 않는 id에 대한 요청시 201 반환
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_REQUEST)); // user가 존재하지 않을 경우에도 201 반환
+        boolean isUserInRoom = userRoomRepository.existsByUserIdAndRoomId(userId, roomId);
+
+        if (!isUserInRoom) {
+            throw new GeneralException(ErrorStatus.INVALID_REQUEST); // 참가한 상태가 아니라면 201 응답을 반환
+        }
+        if (room.getStatus() != RoomStatus.WAIT) {
+            throw new GeneralException(ErrorStatus.INVALID_REQUEST); // 시작(PROGRESS) 상태인 방이거나 끝난(FINISH) 상태의 방이면 201 응답을 반환
+        }
+        if (room.getHost().getId().equals(userId)) {
+            userRoomRepository.deleteAllByRoomId(roomId); // 호스트가 방을 나가게 되면 방에 있던 모든 사람도 해당 방에서 나감
+            room.setStatus(RoomStatus.FINISH);
+            roomRepository.save(room);
+            return;
+        }
+
+        userRoomRepository.deleteByUserIdAndRoomId(userId, roomId);
+        // 호스트가 나가면 방이 종료되므로 방의 남은 인원이 0명인지 체크할 필요 없음
     }
 }
