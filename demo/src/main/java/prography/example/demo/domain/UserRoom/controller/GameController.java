@@ -28,4 +28,12 @@ public class GameController {
         gameService.startGame(roomId, request.getUserId());
         return ApiResponse.success(null);
     }
+
+    @PutMapping("/team/{roomId}")
+    @Operation(summary = "팀 변경 API", description = "반대 팀으로 변경")
+    public ApiResponse<Void> changeRoom(
+            @PathVariable("roomId") Integer roomId, @RequestBody @Valid RoomRequestDTO.RoomActionDTO request) {
+        gameService.changeTeam(roomId, request.getUserId());
+        return ApiResponse.success(null);
+    }
 }

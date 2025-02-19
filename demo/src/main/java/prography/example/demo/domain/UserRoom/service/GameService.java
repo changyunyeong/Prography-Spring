@@ -6,4 +6,5 @@ public interface GameService {
 
     ApiResponse<Void> checkHealth();
     void startGame(Integer roomId, Integer userId);
+    void changeTeam(Integer roomId, Integer userId);
 }
