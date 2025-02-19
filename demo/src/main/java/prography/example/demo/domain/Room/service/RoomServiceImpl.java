@@ -26,7 +26,6 @@ import prography.example.demo.global.common.enums.UserStatus;
 @Service
 @RequiredArgsConstructor
 @Transactional
-@Slf4j
 public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;

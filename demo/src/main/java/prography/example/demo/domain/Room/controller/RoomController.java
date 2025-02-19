@@ -15,7 +15,6 @@ import prography.example.demo.global.apiPayLoad.ApiResponse;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
 public class RoomController {
 
     private final RoomService roomService;

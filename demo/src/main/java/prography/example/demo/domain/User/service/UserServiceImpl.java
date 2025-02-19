@@ -51,8 +51,6 @@ public class UserServiceImpl implements UserService {
         uriParams.put("seed", seed);
         uriParams.put("quantity", quantity);
 
-//        String url = String.format(FAKER_API_URL, seed, quantity);
-
         String url = UriComponentsBuilder.fromUriString(FAKER_API_URL)
                 .buildAndExpand(uriParams)
                 .toUriString();
