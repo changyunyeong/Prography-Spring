@@ -22,9 +22,9 @@ public class ApiResponse<T> {
         return new ApiResponse<>(SuccessStatus.OK.getCode() , SuccessStatus.OK.getMessage(), result);
     }
 
-    // 공통 응답 처리
-    public static <T> ApiResponse<T> of(BaseStatus status, T result) {
-        return new ApiResponse<>(status.getReason().getCode(), status.getReason().getMessage(), result);
+    // 서버 상태를 체크 실패
+    public static <T> ApiResponse<T> badHealth() {
+        return new ApiResponse<>(500, "에러가 발생했습니다.", null);
     }
 
     // 실패 응답

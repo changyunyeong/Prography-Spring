@@ -28,4 +28,8 @@ public class UserRoom {
 
     @Enumerated(EnumType.STRING)
     private Team team;
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
 }
