@@ -19,9 +19,7 @@ import prography.example.demo.domain.User.entity.User;
 import prography.example.demo.domain.User.repository.UserRepository;
 import prography.example.demo.global.apiPayLoad.code.status.ErrorStatus;
 import prography.example.demo.global.apiPayLoad.exception.GeneralException;
-import prography.example.demo.global.common.enums.UserStatus;
 
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;

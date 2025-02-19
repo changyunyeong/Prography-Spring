@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import prography.example.demo.global.apiPayLoad.code.Base.BaseStatus;
 import prography.example.demo.global.apiPayLoad.code.status.SuccessStatus;
 
 @Getter

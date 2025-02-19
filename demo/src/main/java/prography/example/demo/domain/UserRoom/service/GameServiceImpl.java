@@ -2,14 +2,12 @@ package prography.example.demo.domain.UserRoom.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import prography.example.demo.domain.Room.entity.Room;
 import prography.example.demo.domain.Room.repository.RoomRepository;
-import prography.example.demo.domain.User.entity.User;
 import prography.example.demo.domain.User.repository.UserRepository;
 import prography.example.demo.domain.UserRoom.entity.UserRoom;
 import prography.example.demo.domain.UserRoom.repository.UserRoomRepository;
@@ -22,7 +20,6 @@ import prography.example.demo.global.common.enums.Team;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
