@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import prography.example.demo.domain.Room.entity.Room;
 import prography.example.demo.domain.Room.repository.RoomRepository;
-import prography.example.demo.domain.User.repository.UserRepository;
 import prography.example.demo.domain.UserRoom.entity.UserRoom;
 import prography.example.demo.domain.UserRoom.repository.UserRoomRepository;
 import prography.example.demo.global.apiPayLoad.ApiResponse;
@@ -30,7 +29,6 @@ public class GameServiceImpl implements GameService {
 
     private final RoomRepository roomRepository;
     private final UserRoomRepository userRoomRepository;
-    private final UserRepository userRepository;
 
     @Override
     public ApiResponse<Void> checkHealth() {
@@ -44,8 +42,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public void startGame(Integer roomId, Integer userId) {
 
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_REQUEST)); // 존재하지 않는 id에 대한 요청시 201 반환
+        Room room = findRoomById(roomId);
 
         RoomType roomType = room.getRoomType();
         int maxCapacity = roomType == RoomType.DOUBLE ? 4 : 2; // 방 최대 정원 설정
@@ -67,7 +64,7 @@ public class GameServiceImpl implements GameService {
         endGameAfterDelay();
     }
 
-    @Scheduled(fixedDelay = 2000)
+    @Scheduled(fixedDelay = 500)
     public void endGameAfterDelay() {
 
         LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -87,8 +84,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public void changeTeam(Integer roomId, Integer userId) {
 
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_REQUEST)); // 존재하지 않는 id에 대한 요청시 201 반환
+        Room room = findRoomById(roomId);
         UserRoom userRoom = userRoomRepository.findByUserIdAndRoomId(userId, roomId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_REQUEST)); // user가 존재하지 않을 경우에도 201 반환
 
@@ -115,4 +111,12 @@ public class GameServiceImpl implements GameService {
 
         userRoomRepository.save(userRoom);
     }
+
+    // 메소드 분리
+
+    private Room findRoomById(Integer roomId) { // 방 찾기
+        return roomRepository.findById(roomId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_REQUEST)); // 존재하지 않는 id에 대한 요청시 201 반환
+    }
+
 }
