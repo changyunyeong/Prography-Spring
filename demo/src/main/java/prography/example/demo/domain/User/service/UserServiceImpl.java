@@ -19,9 +19,7 @@ import prography.example.demo.domain.User.entity.User;
 import prography.example.demo.domain.User.repository.UserRepository;
 import prography.example.demo.global.apiPayLoad.code.status.ErrorStatus;
 import prography.example.demo.global.apiPayLoad.exception.GeneralException;
-import prography.example.demo.global.common.enums.UserStatus;
 
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -50,8 +48,6 @@ public class UserServiceImpl implements UserService {
         Map<String, Object> uriParams = new HashMap<>();
         uriParams.put("seed", seed);
         uriParams.put("quantity", quantity);
-
-//        String url = String.format(FAKER_API_URL, seed, quantity);
 
         String url = UriComponentsBuilder.fromUriString(FAKER_API_URL)
                 .buildAndExpand(uriParams)

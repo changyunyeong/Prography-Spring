@@ -1,7 +1,6 @@
 package prography.example.demo.domain.Room.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -26,7 +25,6 @@ import prography.example.demo.global.common.enums.UserStatus;
 @Service
 @RequiredArgsConstructor
 @Transactional
-@Slf4j
 public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
@@ -34,21 +32,11 @@ public class RoomServiceImpl implements RoomService {
     private final UserRoomRepository userRoomRepository;
 
     @Override
-    public Room createRoom(RoomRequestDTO.CreateRoomRequestDTO request) {
+    public Room createRoom(RoomRequestDTO.CreateRoomRequestDTO request) { // 방 생성
 
-        int userId = request.getUserId();
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_REQUEST)); // user가 존재하지 않을 경우에도 201 반환
+        User user = findUserById(request.getUserId());
 
-        if (user.getStatus() != UserStatus.ACTIVE) {
-            throw new GeneralException(ErrorStatus.INVALID_REQUEST); // 활성상태가 아닐때는 201 응답을 반환
-        }
-
-        boolean isUserInRoom = userRoomRepository.findUserRoomsByUserId(user);
-
-        if (isUserInRoom) {
-            throw new GeneralException(ErrorStatus.INVALID_REQUEST);
-        }
+        validateUserCanAction(user);
 
         Room room = RoomConverter.toRoom(request, user);
         roomRepository.save(room); // 방 생성
@@ -80,35 +68,12 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public void attentionRoom(Integer roomId, Integer userId) {
 
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_REQUEST)); // 존재하지 않는 id에 대한 요청시 201 반환
+        Room room = findRoomById(roomId);
+        User user = findUserById(userId);
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_REQUEST)); // user가 존재하지 않을 경우에도 201 반환
-        boolean isUserInRoom = userRoomRepository.findUserRoomsByUserId(user);
+        validateUserCanJoin(user, room);
 
-        Integer countByRoom = userRoomRepository.countUserRoomsByRoomId(roomId); // 방에 참여한 인원 수
-        Integer readTeamCount = userRoomRepository.countByRoomIdAndTeam(roomId, Team.RED); // 레드팀 인원 수
-
-        RoomType roomType = room.getRoomType();
-        int maxCapacity = roomType == RoomType.DOUBLE ? 4 : 2; // 방 최대 정원 설정
-
-        if (room.getStatus() != RoomStatus.WAIT) {
-            throw new GeneralException(ErrorStatus.INVALID_REQUEST); // 대기상태가 아닌 방이라면 201 응답을 반환
-        }
-        if (user.getStatus() != UserStatus.ACTIVE || isUserInRoom) {
-            throw new GeneralException(ErrorStatus.INVALID_REQUEST); // 활성상태가 아니고 만약 참여한 방이 있다면 201 응답을 반환
-        }
-        if (countByRoom >= maxCapacity) {
-            throw new GeneralException(ErrorStatus.INVALID_REQUEST); // 인원이 가득 찼다면 201 응답을 반환
-        }
-
-        Team team;
-        if (readTeamCount >= maxCapacity / 2) {
-            team = Team.BLUE; // 레드팀 인원이 찬 경우 블루팀으로 배정
-        } else {
-            team = Team.RED; // 기본은 레드팀으로 배정
-        }
+        Team team = assignTeam(roomId, room.getRoomType());
 
         UserRoom userRoom = RoomConverter.toAttentionRoom(user, room, team);
         userRoomRepository.save(userRoom);
@@ -117,8 +82,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public void outRoom(Integer roomId, Integer userId) {
 
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_REQUEST)); // 존재하지 않는 id에 대한 요청시 201 반환
+        Room room = findRoomById(roomId);
         boolean isUserInRoom = userRoomRepository.existsByUserIdAndRoomId(userId, roomId);
 
         if (!isUserInRoom) {
@@ -136,5 +100,56 @@ public class RoomServiceImpl implements RoomService {
 
         userRoomRepository.deleteByUserIdAndRoomId(userId, roomId);
         // 호스트가 나가면 방이 종료되므로 방의 남은 인원이 0명인지 체크할 필요 없음
+    }
+
+    // 메소드 분리
+
+    private User findUserById(Integer userId) { // 유저 찾기
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_REQUEST)); // user가 존재하지 않을 경우에도 201 반환
+    }
+
+    private Room findRoomById(Integer roomId) { // 방 찾기
+        return roomRepository.findById(roomId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.INVALID_REQUEST)); // 존재하지 않는 id에 대한 요청시 201 반환
+    }
+
+    private void validateUserCanAction(User user) { // 유저 조건 검증
+        if (user.getStatus() != UserStatus.ACTIVE) {
+            throw new GeneralException(ErrorStatus.INVALID_REQUEST); // 활성상태가 아니면 201 응답을 반환
+        }
+
+        boolean isUserInRoom = userRoomRepository.findUserRoomsByUserId(user);
+        if (isUserInRoom) {
+            throw new GeneralException(ErrorStatus.INVALID_REQUEST); // 참여한 방이 있다면 201 응답을 반환
+        }
+    }
+
+    private int getMaxCapacity(RoomType roomType) { // 방 최대 정원 설정
+        return roomType == RoomType.DOUBLE ? 4 : 2;
+    }
+
+    private void validateUserCanJoin(User user, Room room) { // 유저가 방에 참여할 수 있는지 검증
+        boolean isUserInRoom = userRoomRepository.findUserRoomsByUserId(user);
+        Integer countByRoom = userRoomRepository.countUserRoomsByRoomId(room.getId());
+
+        if (room.getStatus() != RoomStatus.WAIT) {
+            throw new GeneralException(ErrorStatus.INVALID_REQUEST); // 시작(PROGRESS) 상태인 방이거나 끝난(FINISH) 상태의 방이면 201 응답을 반환
+        }
+        if (user.getStatus() != UserStatus.ACTIVE || isUserInRoom) {
+            throw new GeneralException(ErrorStatus.INVALID_REQUEST); // 활성상태가 아니거나 만약 참여한 방이 있다면 201 응답을 반환
+        }
+        if (countByRoom >= getMaxCapacity(room.getRoomType())) {
+            throw new GeneralException(ErrorStatus.INVALID_REQUEST); // 인원이 가득 찼다면 201 응답을 반환
+        }
+    }
+
+    private Team assignTeam(Integer roomId, RoomType roomType) { // 팀 배정
+        int maxCapacity = getMaxCapacity(roomType);
+        int halfCapacity = maxCapacity / 2;
+
+        int redTeamCount = userRoomRepository.countByRoomIdAndTeam(roomId, Team.RED);
+
+        return (redTeamCount >= halfCapacity) ? Team.BLUE : Team.RED;
     }
 }
